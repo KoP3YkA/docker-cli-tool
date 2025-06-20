@@ -1,0 +1,6 @@
+#ifndef DOCKER_CLI_TOOL_GENERATE_COMMAND_H
+#define DOCKER_CLI_TOOL_GENERATE_COMMAND_H
+
+char* generate(int size, char* args[]);
+
+#endif //DOCKER_CLI_TOOL_GENERATE_COMMAND_H
