@@ -79,6 +79,69 @@ volumes:
 ### 🏷️ All Options
 
 - `--v*` - sets version of `FROM`
-- `--mysql` - adds mysql image to `docker-compose.yml`
+- `--mysql` - adds MySQL image to `docker-compose.yml`
 - `--nasm` - applies to gcc only. Will run .asm file via NASM
-- `--nodeBuild` -- adds `RUN npm run build` in Dockerfile
+- `--nodeBuild` - adds `RUN npm run build` in Dockerfile
+- `--force` - overwrite current `Dockerfile` and `docker-compose.yml` if it exists
+- `--postgre` - adds Postgres image to `docker-compose.yml`
+- `--mongodb` - adds Mongo image to `docker-compose.yml`
+
+### 🎉 Templates
+
+DockerCLI can also work with templates. Templates are presented as JSON files with a certain structure. Below is this structure
+
+some.json
+
+```json
+{
+  "from": "ur_from",
+  "dockerfile": [
+    "WORKDIR /app",
+    "${variable}",
+    "CMD [\"Hello!\"]"
+  ],
+  "variables": {
+    "variable": {
+      "true": "Value or values if specified",
+      "false": [
+        "Value or values",
+        "if not specified"
+      ]
+    }
+  },
+  "options": {
+    "--someOption": "variable"
+  },
+  "compose": [
+    "version: '3.8'",
+    "${variable}",
+    "",
+    "services:",
+    "  app:"
+  ]
+}
+```
+
+If you type
+> dockercli some --someOption
+
+Then you see:
+
+Dockerfile
+```Dockerfile
+FROM ur_from:lasted
+WORKDIR /app
+Value or values if specified
+CMD ["Hello!"]
+```
+
+docker-compose.yml
+```yaml
+version: '3.8'
+Value or values if specified
+
+services:
+  app:
+```
+
+In templates, only `--force` and `--v*` work from standard options.

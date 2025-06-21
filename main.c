@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <io.h>
-#include "lib/globals.h"
 #include "lib/commands/help/help_command.h"
 #include "lib/commands/generate/generate_command.h"
+#include "lib/commands/template/template_command.h"
 #include <string.h>
 
-char version[] = "1.0";
+char version[] = "1.1";
 
 int main(int argc, char *argv[]) {
     if (argc == 1) {
@@ -26,6 +25,9 @@ int main(int argc, char *argv[]) {
     else if (strcmp(current_command, "generate") == 0 || strcmp(current_command, "g") == 0) {
         char* result = generate(argc - 2, argv + 2);
         printf(result);
+    }
+    else if (strcmp(current_command, "template") == 0 || strcmp(current_command, "temp") == 0) {
+        template_command(argc - 2, argv + 2);
     }
     else {
         printf("Invalid command. Use <<help>> for list of commands\n");

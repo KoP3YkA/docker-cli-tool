@@ -1,6 +1,9 @@
 #include <malloc.h>
 #include "stdio.h"
 #include <stdlib.h>
+#include <fileapi.h>
+#include <errhandlingapi.h>
+#include <winerror.h>
 
 typedef struct {
     char* path;
@@ -29,10 +32,17 @@ char *file_read(ManagerFile* file) {
     return buffer;
 }
 
+int create_directory_if_not_exists(ManagerFile* file) {
+    if (CreateDirectory(file->path, NULL) || GetLastError() == ERROR_ALREADY_EXISTS) {
+        return 0;
+    }
+    return 1;
+}
+
 int create_file_if_not_exists(ManagerFile* file) {
     FILE *newFile = fopen(file->path, "w");
-    fclose(newFile);
     if (!newFile) return 1;
+    fclose(newFile);
     return 0;
 }
 
@@ -50,4 +60,9 @@ int add_text_to_file(ManagerFile* file, char* text) {
     fprintf(newFile, "%s", text);
     fclose(newFile);
     return 0;
+}
+
+int delete_file(ManagerFile* file) {
+    if (DeleteFileA(file->path)) return 0;
+    else return 1;
 }
