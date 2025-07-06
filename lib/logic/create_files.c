@@ -15,7 +15,7 @@ void create_dockerfile(char* args[], char* version, bool nasm, bool node_build) 
     overwrite_file(&dockerfile, line);
 
     if (nasm) {
-        add_text_to_file(&dockerfile, "\n\nRUN apt update && apt install -y nasm");
+        add_text_to_file(&dockerfile, "\n\nRUN apt update && apt install -y nasm binutils");
     }
 
     add_text_to_file(&dockerfile, "\n\nWORKDIR /app");
@@ -47,6 +47,10 @@ void create_dockerfile(char* args[], char* version, bool nasm, bool node_build) 
             add_text_to_file(&dockerfile, "\n\nRUN gcc main.c -o main");
             add_text_to_file(&dockerfile, "\n\nCMD [\"./main\"]");
         }
+    } else if (nasm) {
+        add_text_to_file(&dockerfile, "\n\nRUN nasm -f elf64 main.asm -o main.o");
+        add_text_to_file(&dockerfile, "\n\nRUN ld main.o -o main");
+        add_text_to_file(&dockerfile, "\n\nCMD [\"./main\"]");
     }
 }
 
